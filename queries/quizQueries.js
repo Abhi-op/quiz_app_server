@@ -1,6 +1,6 @@
 exports.createQuizQuery = "INSERT INTO QUIZ_DTLS SET QUIZ_ID=?,PUBLISHED=?,USER_ID=?"
 
-exports.publishQuizQuery = "UPDATE QUIZ_DTLS SET PUBLISHED=? WHERE QUIZ_ID=?"
+exports.publishQuizQuery = "UPDATE QUIZ_DTLS SET PUBLISHED=?, CODE=?, WHERE QUIZ_ID=?"
 
 
 exports.deleteQuizQuery = " DELETE FROM QUIZ_DTLS WHERE QUIZ_ID=?"

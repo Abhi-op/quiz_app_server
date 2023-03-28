@@ -16,10 +16,10 @@ exports.createQuizDal = async(quizId,userId)=>{
          }
 }
 
-exports.publishQuizDal = async(quizId)=>{
+exports.publishQuizDal = async(code,quizId)=>{
         const connection = await mysql.connection();
         try{
-                const response = await connection.query(quizQuery.publishQuizQuery,[1,quesId]);
+                const response = await connection.query(quizQuery.publishQuizQuery,[1,code,quizId]);
                 if(response.affectedRows){
                         return response;
                 }
@@ -42,4 +42,20 @@ exports.deleteQuiz = async(quizId)=>{
          }finally{
                 await connection.release();
          }
+}
+
+
+
+exports.addQuestionDal = async(data)=>{
+           const connection = await mysql.connection();
+           try {
+                const response = await connection.query(quizQuery.createQuestion,[...data]);
+                if(response.affectedRows){
+                        return response;
+                }
+                
+           } catch (error) {
+                await connection.release();
+                
+           }
 }

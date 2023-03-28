@@ -6,3 +6,8 @@ const quizController = require("../controller/quizController")
 quizRouter.post("/create/quiz/:userId",quizController.createQuiz);
 quizRouter.put("/publish/quiz/:quizId",quizController.publishQuiz);
 quizRouter.delete("/delete/quiz/:quizId",quizController.deleteQuiz);
+
+
+quizRouter.post("/add/question/:quizId",quizController.addQuestion);
+
+module.exports = quizRouter
