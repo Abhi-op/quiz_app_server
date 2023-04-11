@@ -5,19 +5,23 @@ const app= express();
 const createError = require('http-errors');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const userRoutes = require("../backend/routes/user_routes");
-const quizRoutes = require("../backend/routes/quizRoutes");
+const userRoutes = require("./routes/user_routes");
+const quizRoutes = require("./routes/quizRoutes");
 
 
 //Port
 const port= process.env.PORT||4000;
 
 app.listen(port,()=>console.log(`server is running on port ${port}`));
-
+app.get("/", (req, res) => {
+   res.json("Healthy");
+ });
 
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(cors({credentials:true}));
 app.use(bodyParser.json());
+
+
 app.use("/user",userRoutes);
 app.use("/quizApp",quizRoutes);
 
