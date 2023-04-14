@@ -8,11 +8,17 @@ exports.createQuizDal = async(quizId,userId)=>{
         const connection = await mysql.connection();
          try{
                const response = await connection.query(quizQuery.createQuizQuery,[quizId,0,userId]);
+               console.log(response)
                if(response.affectedRows){
                      return response;
                }
 
-         }finally{
+         }catch(error){
+                console.log(error)
+                throw new Error(error);
+        }
+
+                finally{
                await connection.release();
          }
 }
@@ -47,10 +53,10 @@ exports.deleteQuiz = async(quizId)=>{
 
 
 
-exports.addQuestionDal = async(data)=>{
+exports.addQuestionDal = async(quesId,quesDescreption,quesType,op1,op2,op3,op4,answer,quizId)=>{
            const connection = await mysql.connection();
            try {
-                const response = await connection.query(quizQuery.createQuestion,[...data]);
+                const response = await connection.query(quizQuery.createQuestion,[quesId,quesDescreption,quesType,op1,op2,op3,op4,answer,quizId]);
                 if(response.affectedRows){
                         return response;
                 }
@@ -65,7 +71,7 @@ exports.addQuestionDal = async(data)=>{
 exports.getUserQuizDal = async(userId)=>{
           const connection = await mysql.connection();
           try{
-                const rsponse = await connection.query(quizQuery.getUserQuizQuery,[userId]);
+                const response = await connection.query(quizQuery.getUserQuizQuery,[userId]);
                 if(response.affectedRows){
                         return response;
                 }
@@ -80,8 +86,11 @@ exports.getQuizQuestionDal = async(quizId)=>{
            const connection = await mysql.connection();
            try {
                 const response = await connection.query(quizQuery.getQuizQuestionsQuery,[quizId])
-                if(response.affectedRows){
+                console.log(response)
+
+                if(response.length){
                         return response;
+
                 }
                 
            } catch (error) {

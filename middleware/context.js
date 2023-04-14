@@ -5,7 +5,7 @@ const fetchuser = (req, res, next) => {
   const token = req.header("auth-token");
   // if token is not present
   if (!token) {
-    res.status(401).send({ error: "Please authenticate using a valid token" });
+  return  res.status(401).send({ error: "Please provide a token" });
   }
   try {
     // or we will verify the user using jwt.verify
@@ -14,7 +14,7 @@ const fetchuser = (req, res, next) => {
     req.user = data.user;
     next();
   } catch (error) {
-    res.status(401).send({ error: "Please authenticate using a valid token" });
+   return res.status(401).send({ error: "Please authenticate using a valid token" });
   }
 };
 module.exports = fetchuser;

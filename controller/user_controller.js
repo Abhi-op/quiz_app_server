@@ -7,11 +7,11 @@ var jwt = require('jsonwebtoken');
   const JWT_SECRET = process.env.JWT_SECRET;
 exports.createUserCredentials = async(req,res) =>{
      
-        const {name,emailAddress,password} = req.body;
+        const {name,email,password} = req.body;
          const userId = uuidv4();
          let success = false;
            try {
-               if(!emailAddress){
+               if(!email){
                     return res
                     .status(400)
                     .json({ success, error: "Email missing" }); 
@@ -22,12 +22,12 @@ exports.createUserCredentials = async(req,res) =>{
                }else if(!password){
                     return res
                     .status(400)
-                    .json({ success, error: "PAssword missing" }); 
+                    .json({ success, error: "Password missing" }); 
                }
 
-               let user = await  UserDal.getUserDal(emailAddress);
+               let user = await  UserDal.getUserDal(email);
                console.log("user",user);
-               if (user[0].emailAddress) {
+               if (user[0]?.emailAddress) {
                     return res
                       .status(400)
                       .json({ success, error: "sorry a user with this email already exists" });
@@ -36,20 +36,24 @@ exports.createUserCredentials = async(req,res) =>{
                   const salt = await bcrypt.genSalt(10);
                   const secPass = await bcrypt.hash(password, salt)
                   // Create a new user
-                   user = await UserDal.createUser(userId,name,emailAddress,secPass);
-            
-                  const data = {
+                   user = await UserDal.createUser(userId,name,email,secPass);
+                       if(user.affectedRows){
+                  const data1 = {
                     user: {
-                      id:  user[0].userId
+                      id:  userId
                     }
                   }
-                  const authToken = jwt.sign(data, JWT_SECRET);
-            
+                  const authToken = jwt.sign(data1, JWT_SECRET);
+                   const resData = {
+                        authToken:authToken,
+                        userId:userId
+                   }
+                
                   //res.json(use)
                   success = true;
                   // console.log(jwtData);
-                  res.json({success, authToken});
-               
+                  res.json({success, resData});
+                }
 
            } catch (error) {
                 console.error("Error While creating User")
@@ -59,10 +63,10 @@ exports.createUserCredentials = async(req,res) =>{
 
 
 exports.userLogin = async(req,res)=>{
-       const {emailAddress,password} = req.body;
+       const {email,password} = req.body;
        let success;
        try {
-          if(!emailAddress){
+          if(!email){
                return res
                .status(400)
                .json({ success, error: "Email missing" }); 
@@ -72,9 +76,9 @@ exports.userLogin = async(req,res)=>{
                .json({ success, error: "Password missing" }); 
           }
 
-          let user = await  UserDal.getUserDal(emailAddress);
+          let user = await  UserDal.getUserDal(email);
           // if user doesnt exist
-          if(!user){
+          if(!user[0].emailAddress){
           //  success: false;
             return res.status(400).json({error: "Please try to login with correct credentials"});
           }
@@ -87,14 +91,19 @@ exports.userLogin = async(req,res)=>{
           }
     
           // 
-          const data = {
+          const data1 = {
             user: {
               id: user[0].userId
             }
           }
-          const authToken = jwt.sign(data, JWT_SECRET);
+          const authToken = jwt.sign(data1, JWT_SECRET);
+          const resData = {
+            authToken:authToken,
+            userId:user[0].userId
+       }
+    
           success = true;
-          res.json({success, authToken});
+          res.json({success, resData});
 
           
           

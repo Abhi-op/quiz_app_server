@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const userRoutes = require("./routes/user_routes");
 const quizRoutes = require("./routes/quizRoutes");
-
+const cookieParser = require("cookie-parser");
 
 //Port
 const port= process.env.PORT||4000;
@@ -17,8 +17,8 @@ app.get("/", (req, res) => {
    res.json("Healthy");
  });
 
+ app.use(cors());
 app.use(bodyParser.urlencoded({extended:false}));
-app.use(cors({credentials:true}));
 app.use(bodyParser.json());
 
 
@@ -34,7 +34,6 @@ app.use((req,res,next)=>{
       
      app.use((err,req,res,next)=>{
         res.locals.message= err.message;
-        res.locals.error=req.app.get('env')==='development'?err:{};
       
         //rendering error page
         res.status(err.status || 500);
